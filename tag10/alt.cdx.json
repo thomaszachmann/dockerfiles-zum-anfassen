@@ -1,0 +1,25 @@
+{
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.5",
+  "version": 1,
+  "metadata": {
+    "component": {
+      "bom-ref": "notes-legacy",
+      "type": "application",
+      "name": "notes-legacy"
+    }
+  },
+  "components": [
+    {
+      "bom-ref": "pkg:golang/golang.org/x/text@v0.3.5",
+      "type": "library",
+      "name": "golang.org/x/text",
+      "version": "v0.3.5",
+      "purl": "pkg:golang/golang.org/x/text@v0.3.5"
+    }
+  ],
+  "dependencies": [
+    { "ref": "notes-legacy", "dependsOn": ["pkg:golang/golang.org/x/text@v0.3.5"] },
+    { "ref": "pkg:golang/golang.org/x/text@v0.3.5", "dependsOn": [] }
+  ]
+}

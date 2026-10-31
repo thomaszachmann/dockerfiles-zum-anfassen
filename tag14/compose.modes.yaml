@@ -1,0 +1,22 @@
+# compose.modes.yaml – Tag 14: wirken uid/gid/mode? (Datei- vs. environment-Quelle)
+name: notes-modes
+
+services:
+  notes-modes:
+    image: notes-worker:tag14
+    entrypoint: ["ls", "-ln", "/run/secrets"]
+    secrets:
+      - source: aus_datei
+        uid: "65532"
+        gid: "65532"
+        mode: 0400
+      - source: aus_env
+        uid: "65532"
+        gid: "65532"
+        mode: 0400
+
+secrets:
+  aus_datei:
+    file: ./secrets/notes_api_key.txt
+  aus_env:
+    environment: NOTES_API_KEY

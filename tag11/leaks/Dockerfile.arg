@@ -1,0 +1,12 @@
+# syntax=docker/dockerfile:1
+# LEAK-DEMO (Tag 11): API-Key als Build-Argument. Nicht nachmachen.
+# Bauen und Nachweis: Tag 11 (Kapitel 11-secrets-leaks).
+FROM golang:1.27-alpine
+WORKDIR /src
+COPY . .
+RUN go build -o /usr/local/bin/notes-api .
+ARG NOTES_API_KEY
+# "Nur kurz zum Debuggen" – landet im Build-Log und in der History.
+RUN echo "Konfig-Check: NOTES_API_KEY=${NOTES_API_KEY}"
+USER 65532:65532
+ENTRYPOINT ["notes-api"]

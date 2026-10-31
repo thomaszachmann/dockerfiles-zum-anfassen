@@ -1,0 +1,4 @@
+# LEAK-DEMO: Diese Datei ersetzt die .dockerignore im Projektordner vollständig.
+# Sie ergänzt sie nicht – und .env steht hier nicht drin.
+.git
+**/node_modules

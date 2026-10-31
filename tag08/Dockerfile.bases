@@ -1,0 +1,40 @@
+# syntax=docker/dockerfile:1
+# Tag 8: dasselbe notes-api-Binary auf vier Laufzeit-Images.
+# Bauen mit --target rt-scratch | rt-distroless | rt-chainguard | rt-wolfi
+FROM golang:1.27-alpine AS build
+ENV CGO_ENABLED=0
+WORKDIR /src
+COPY go.mod go.sum ./
+RUN --mount=type=cache,target=/go/pkg/mod go mod download
+COPY . .
+RUN --mount=type=cache,target=/go/pkg/mod \
+    --mount=type=cache,target=/root/.cache/go-build \
+    go build -trimpath -ldflags="-s -w" -o /out/notes-api .
+
+# nichts außer dem, was du hineinkopierst
+FROM scratch AS rt-scratch
+COPY --link --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+COPY --link --from=build /out/notes-api /notes-api
+USER 65532:65532
+ENTRYPOINT ["/notes-api"]
+
+# Debian-basiert, ohne Shell, mit CA-Zertifikaten, tzdata und /etc/passwd
+FROM gcr.io/distroless/static-debian13:nonroot AS rt-distroless
+COPY --link --from=build /out/notes-api /notes-api
+USER 65532:65532
+ENTRYPOINT ["/notes-api"]
+
+# Wolfi-basiert, ohne Shell; frei verfügbar ist nur der Tag latest,
+# darum hier DL3007 bewusst ignoriert – in Produktion: @sha256:… pinnen
+# hadolint ignore=DL3007
+FROM cgr.dev/chainguard/static:latest AS rt-chainguard
+COPY --link --from=build /out/notes-api /notes-api
+USER 65532:65532
+ENTRYPOINT ["/notes-api"]
+
+# Wolfi mit Shell und apk – zum Vergleich, nicht als Laufzeit gedacht
+# hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest AS rt-wolfi
+COPY --link --from=build /out/notes-api /notes-api
+USER 65532:65532
+ENTRYPOINT ["/notes-api"]

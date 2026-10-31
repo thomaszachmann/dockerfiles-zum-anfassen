@@ -1,0 +1,16 @@
+# syntax=docker/dockerfile:1
+# Demo für COPY --link: Laufzeit-Image wechseln, ohne das COPY neu auszuführen.
+ARG RUNTIME=gcr.io/distroless/static-debian13:nonroot
+
+FROM golang:1.27-alpine AS build
+ENV CGO_ENABLED=0
+WORKDIR /src
+COPY . .
+RUN --mount=type=cache,target=/go/pkg/mod \
+    --mount=type=cache,target=/root/.cache/go-build \
+    go build -trimpath -ldflags="-s -w" -o /out/notes-api .
+
+FROM ${RUNTIME}
+COPY --link --from=build /out/notes-api /notes-api
+USER 65532:65532
+ENTRYPOINT ["/notes-api"]

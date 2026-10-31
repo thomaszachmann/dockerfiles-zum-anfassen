@@ -1,0 +1,17 @@
+# .dockerignore im Projektordner – gilt, wenn der Projektordner der Build-Kontext ist
+# Secrets: nur die Vorlage darf mit
+.env
+.env.*
+!.env.example
+# Versionskontrolle und Betriebssystem
+.git
+**/.DS_Store
+# Abhängigkeiten, Build-Ergebnisse, Caches – in jeder Tiefe
+**/node_modules
+**/dist
+**/.venv
+**/__pycache__
+**/*.test
+# Doku: nur die README im Wurzelordner
+*.md
+!README.md

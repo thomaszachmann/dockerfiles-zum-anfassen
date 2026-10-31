@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# pre-commit – bricht den Commit ab, wenn .env-Dateien oder Lab-Keys gestagt sind.
+# Installieren: cp pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit
+set -euo pipefail
+muster='lab-api-key-[0-9]+'
+fail=0
+while IFS= read -r -d '' f; do
+  case "$(basename "$f")" in
+    .env.example) ;;
+    .env | .env.*)
+      echo "✘ $f: .env-Dateien gehören nicht ins Repository"
+      fail=1
+      ;;
+  esac
+  if git show ":$f" | grep -qE -- "$muster"; then
+    echo "✘ $f: enthält einen API-Key ($muster)"
+    fail=1
+  fi
+done < <(git diff --cached --name-only -z --diff-filter=ACMR)
+if [ "$fail" -ne 0 ]; then
+  echo "Commit abgebrochen."
+  exit 1
+fi

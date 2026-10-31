@@ -1,0 +1,13 @@
+# .dockerignore für notes-web (Kontext: notes-web/), Stand Tag 12
+Dockerfile*
+.dockerignore
+*.md
+.git
+**/.env*
+**/*.env
+**/*.pem
+**/*.key
+**/.npmrc
+node_modules
+dist
+**/.DS_Store

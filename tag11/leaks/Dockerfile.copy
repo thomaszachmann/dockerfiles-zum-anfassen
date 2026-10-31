@@ -1,0 +1,9 @@
+# syntax=docker/dockerfile:1
+# LEAK-DEMO (Tag 11): Projektordner als Kontext, COPY . . nimmt die .env mit.
+# Bauen und Nachweis: Tag 11 (Kapitel 11-secrets-leaks).
+FROM golang:1.27-alpine
+WORKDIR /src
+COPY . .
+RUN go build -C notes-api -o /usr/local/bin/notes-api .
+USER 65532:65532
+ENTRYPOINT ["notes-api"]

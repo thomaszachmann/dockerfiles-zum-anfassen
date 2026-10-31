@@ -1,0 +1,4 @@
+# syntax=docker/dockerfile:1
+# Wie Dockerfile.kontext, aber mit eigener Dockerfile.whitelist.dockerignore
+FROM scratch
+COPY . /

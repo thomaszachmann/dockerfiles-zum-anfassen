@@ -1,0 +1,13 @@
+# .dockerignore für notes-worker (Kontext: notes-worker/), Stand Tag 12
+Dockerfile*
+.dockerignore
+*.md
+.git
+**/.env*
+**/*.env
+**/*.pem
+**/*.key
+.venv
+**/__pycache__
+**/*.pyc
+**/.DS_Store

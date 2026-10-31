@@ -1,0 +1,12 @@
+# syntax=docker/dockerfile:1
+# Absichtlich kaputt – Übungsobjekt für Build Checks und hadolint (Tag 9)
+FROM golang:1.27-alpine as build
+ARG NOTES_API_KEY
+WORKDIR /src
+COPY . .
+RUN go build -o /out/notes-api .
+
+FROM scratch
+COPY --from=build /out/notes-api /notes-api
+USER root
+CMD /notes-api

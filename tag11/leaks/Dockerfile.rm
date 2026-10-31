@@ -1,0 +1,15 @@
+# syntax=docker/dockerfile:1
+# LEAK-DEMO (Tag 11): .env kopiert, benutzt, im nächsten RUN gelöscht.
+# Bauen und Nachweis: Tag 11 (Kapitel 11-secrets-leaks).
+FROM golang:1.27-alpine
+WORKDIR /src
+COPY .env /tmp/build.env
+COPY notes-api/ .
+# Der Build "braucht" den Key, z. B. für einen Integrationstest (hier nur geprüft).
+RUN set -a && . /tmp/build.env && set +a \
+ && test -n "$NOTES_API_KEY" \
+ && go build -o /usr/local/bin/notes-api .
+# Aufräumen im nächsten Layer – zu spät.
+RUN rm /tmp/build.env
+USER 65532:65532
+ENTRYPOINT ["notes-api"]

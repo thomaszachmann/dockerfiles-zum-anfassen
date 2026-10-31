@@ -1,0 +1,7 @@
+# syntax=docker/dockerfile:1
+# Absichtlich Shell-Form – Demo für Tag 2: wer ist PID 1?
+FROM golang:1.27-alpine
+WORKDIR /src
+COPY . .
+RUN go build -o /usr/local/bin/notes-api .
+CMD notes-api 2>&1 | tee /tmp/notes-api.log

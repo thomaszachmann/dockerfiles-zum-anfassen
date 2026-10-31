@@ -1,0 +1,14 @@
+# syntax=docker/dockerfile:1
+# LEAK-DEMO (Tag 11): Build-Argument nur im build-Stage, Final-Stage scratch.
+# Bauen und Nachweis: Tag 11 (Kapitel 11-secrets-leaks).
+FROM golang:1.27-alpine AS build
+WORKDIR /src
+COPY . .
+ARG NOTES_API_KEY
+RUN test -n "$NOTES_API_KEY" \
+ && CGO_ENABLED=0 go build -trimpath -o /out/notes-api .
+
+FROM scratch
+COPY --from=build /out/notes-api /notes-api
+USER 65532:65532
+ENTRYPOINT ["/notes-api"]

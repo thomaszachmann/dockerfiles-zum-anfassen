@@ -1,0 +1,47 @@
+# compose.yaml – Stand Ende Tag 13
+name: notes
+
+services:
+  notes-api:
+    build:
+      context: notes-api
+      network: host            # Lab: artifact-server auf 127.0.0.1:8081
+      secrets:
+        - artifact_token       # Tag 13: Build-Secret, landet in keinem Layer
+    image: notes-api:tag13
+    container_name: notes-api
+    env_file: .env
+    ports:
+      - "127.0.0.1:8080:8080"
+
+  notes-worker:
+    build: notes-worker
+    image: notes-worker:tag13
+    container_name: notes-worker
+    env_file: .env
+    environment:
+      NOTES_API_URL: http://notes-api:8080
+    depends_on:
+      notes-api:
+        condition: service_healthy
+
+  notes-web:
+    build:
+      context: notes-web
+      secrets:
+        - npmrc                # Tag 13: .npmrc nur während npm ci
+    image: notes-web:tag13
+    container_name: notes-web
+    env_file: .env
+    environment:
+      NOTES_API_URL: http://notes-api:8080
+    ports:
+      - "127.0.0.1:3000:3000"
+    depends_on:
+      - notes-api
+
+secrets:
+  artifact_token:
+    environment: ARTIFACT_TOKEN
+  npmrc:
+    file: ./secrets/npmrc

@@ -1,0 +1,17 @@
+{
+  "name": "notes-web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Oberfläche für notes-api: statische Seite plus Proxy auf /api",
+  "scripts": {
+    "build": "esbuild src/app.js --bundle --minify --outfile=dist/app.js",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0"
+  }
+}

@@ -1,0 +1,33 @@
+# syntax=docker/dockerfile:1
+# Lösung Challenge Tag 5: Zeitzonen-Datenbank aus dem build-Stage nach scratch
+ARG GO_VERSION=1.27
+
+# in Produktion: @sha256:… pinnen, siehe Tag 8
+FROM golang:${GO_VERSION}-alpine AS build
+ARG VERSION=dev
+ENV CGO_ENABLED=0
+# golang:*-alpine bringt ca-certificates mit, aber kein tzdata
+# hadolint ignore=DL3018
+RUN apk add --no-cache tzdata
+WORKDIR /src
+COPY go.mod go.sum ./
+RUN --mount=type=cache,target=/go/pkg/mod go mod download
+COPY . .
+RUN --mount=type=cache,target=/go/pkg/mod \
+    --mount=type=cache,target=/root/.cache/go-build \
+    go build -trimpath -ldflags="-s -w -X main.version=${VERSION}" \
+      -o /out/notes-api .
+
+FROM scratch
+LABEL org.opencontainers.image.title="notes-api" \
+      org.opencontainers.image.description="Notiz-API aus dem Trainingslager" \
+      org.opencontainers.image.source="https://example.com/docker-lab/notes"
+COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+COPY --from=build /usr/share/zoneinfo /usr/share/zoneinfo
+COPY --from=build /out/notes-api /notes-api
+EXPOSE 8080
+USER 65532:65532
+HEALTHCHECK --interval=10s --timeout=2s --start-period=5s --start-interval=1s \
+  CMD ["/notes-api", "healthcheck"]
+STOPSIGNAL SIGTERM
+ENTRYPOINT ["/notes-api"]

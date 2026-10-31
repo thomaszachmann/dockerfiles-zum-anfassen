@@ -1,0 +1,4 @@
+# syntax=docker/dockerfile:1
+# COPY --exclude filtert nur diese eine Anweisung, nicht den Build-Kontext.
+FROM scratch
+COPY --exclude=*.md --exclude=notes-worker/uv.lock . /

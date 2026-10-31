@@ -1,0 +1,7 @@
+# notes-api/.dockerignore – gilt, wenn notes-api/ der Build-Kontext ist
+Dockerfile*
+.dockerignore
+*.md
+.git
+.env*
+**/*.test

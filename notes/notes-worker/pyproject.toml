@@ -1,0 +1,13 @@
+[project]
+name = "notes-worker"
+version = "0.1.0"
+description = "Liest Notizen aus notes-api und schreibt regelmäßig eine Zusammenfassung"
+requires-python = ">=3.13"
+dependencies = ["httpx>=0.28"]
+
+[project.scripts]
+notes-worker = "notes_worker:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

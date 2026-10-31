@@ -1,0 +1,11 @@
+# syntax=docker/dockerfile:1
+# Lösung der Challenge (Tag 13): Secret nur im RUN, der es braucht, nie kopieren.
+# in Produktion: @sha256:… pinnen, siehe Tag 8
+FROM python:3.13-slim
+WORKDIR /app
+COPY fetch.py ./
+RUN --mount=type=secret,id=artifact_token,required=true \
+    TOKEN_FILE=/run/secrets/artifact_token python3 fetch.py \
+      http://127.0.0.1:8081/tools/notes-banner.txt /app/banner.txt
+USER 65532:65532
+CMD ["cat", "/app/banner.txt"]

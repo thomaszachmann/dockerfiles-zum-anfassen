@@ -1,0 +1,5 @@
+# syntax=docker/dockerfile:1
+# Kopiert den kompletten Build-Kontext in ein leeres Image.
+# Mit -o type=local,dest=<ordner> landet dessen Dateisystem in einem Ordner.
+FROM scratch
+COPY . /

@@ -1,0 +1,16 @@
+# syntax=docker/dockerfile:1
+# Variante: Quellcode per Bind-Mount statt COPY – kein Quellcode-Layer im Image.
+ARG GO_VERSION=1.27
+FROM golang:${GO_VERSION}-alpine
+WORKDIR /src
+ARG VERSION=dev
+RUN --mount=type=bind,target=. \
+    --mount=type=cache,target=/go/pkg/mod \
+    --mount=type=cache,target=/root/.cache/go-build \
+    go build -ldflags "-X main.version=${VERSION}" -o /usr/local/bin/notes-api .
+EXPOSE 8080
+HEALTHCHECK --interval=10s --timeout=2s --start-period=5s --start-interval=1s \
+  CMD ["notes-api", "healthcheck"]
+STOPSIGNAL SIGTERM
+USER 65532:65532
+ENTRYPOINT ["notes-api"]

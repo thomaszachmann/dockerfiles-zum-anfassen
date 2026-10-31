@@ -1,0 +1,36 @@
+# compose.yaml – erste Version (Tag 12): nur so viel Compose, wie Secrets brauchen.
+# Die .env im Projektordner liest Compose für ${…} (Interpolation);
+# env_file: .env legt ihren Inhalt zusätzlich in die Container-Umgebung.
+name: notes
+
+services:
+  notes-api:
+    build: notes-api
+    image: notes-api:tag12
+    container_name: notes-api
+    env_file: .env
+    ports:
+      - "127.0.0.1:8080:8080"
+
+  notes-worker:
+    build: notes-worker
+    image: notes-worker:tag12
+    container_name: notes-worker
+    env_file: .env
+    environment:
+      NOTES_API_URL: http://notes-api:8080
+      INTERVAL: ${WORKER_INTERVAL:-10}
+    depends_on:
+      - notes-api
+
+  notes-web:
+    build: notes-web
+    image: notes-web:tag12
+    container_name: notes-web
+    env_file: .env
+    environment:
+      NOTES_API_URL: http://notes-api:8080
+    ports:
+      - "127.0.0.1:3000:3000"
+    depends_on:
+      - notes-api

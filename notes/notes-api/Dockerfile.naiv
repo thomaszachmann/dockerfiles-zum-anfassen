@@ -1,0 +1,9 @@
+# syntax=docker/dockerfile:1
+# Absichtlich schlecht – das Buch verbessert es Tag für Tag.
+FROM golang:1.27
+WORKDIR /src
+COPY . .
+ENV NOTES_API_KEY=lab-api-key-123
+RUN go build -o /usr/local/bin/notes-api .
+EXPOSE 8080
+CMD notes-api

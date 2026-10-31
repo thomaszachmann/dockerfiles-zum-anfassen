@@ -1,0 +1,34 @@
+# Ausblick Kubernetes (Tag 14, statisch): derselbe *_FILE-Vertrag im Pod.
+# Das Secret selbst kommt in echt aus External Secrets Operator, OpenBao o. ä.
+apiVersion: v1
+kind: Secret
+metadata:
+  name: notes-api-key
+type: Opaque
+stringData:
+  notes_api_key: lab-api-key-123      # Lab-Wert – nie echte Werte in YAML
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: notes-api
+spec:
+  securityContext:
+    runAsUser: 65532
+    runAsGroup: 65532
+    runAsNonRoot: true
+  containers:
+    - name: notes-api
+      image: localhost:5001/notes-api:tag14
+      env:
+        - name: NOTES_API_KEY_FILE
+          value: /run/secrets/notes/notes_api_key
+      volumeMounts:
+        - name: api-key
+          mountPath: /run/secrets/notes
+          readOnly: true
+  volumes:
+    - name: api-key
+      secret:
+        secretName: notes-api-key
+        defaultMode: 0400

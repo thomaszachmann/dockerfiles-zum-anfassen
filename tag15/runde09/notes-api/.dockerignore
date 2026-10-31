@@ -1,0 +1,4 @@
+# Allowlist: alles raus, nur der Quellcode rein
+*
+!*.go
+!go.mod

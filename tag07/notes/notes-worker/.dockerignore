@@ -1,0 +1,8 @@
+# notes-worker/.dockerignore (Tag 6)
+Dockerfile*
+.dockerignore
+.git
+.env*
+.venv
+**/__pycache__
+**/*.pyc

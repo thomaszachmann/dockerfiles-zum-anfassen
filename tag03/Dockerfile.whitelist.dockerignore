@@ -1,0 +1,6 @@
+# Whitelist: erst alles ausschließen, dann gezielt zurückholen
+*
+!notes-api/
+# innerhalb von notes-api wieder ausschließen (letzter Treffer gewinnt)
+notes-api/Dockerfile*
+notes-api/**/*.test
