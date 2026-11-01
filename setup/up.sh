@@ -2,6 +2,7 @@
 # up.sh – startet lokale Registry und buildx-Builder (idempotent)
 set -euo pipefail
 DIR="$(cd "$(dirname "$0")" && pwd)"
+# shellcheck source=/dev/null
 source "$DIR/env.sh"
 
 if ! docker inspect "$REG_NAME" >/dev/null 2>&1; then

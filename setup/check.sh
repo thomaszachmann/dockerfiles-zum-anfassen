@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # check.sh – prüft das Trainingsgelände (✔/✘). Exit-Code = Anzahl Fehler.
 DIR="$(cd "$(dirname "$0")" && pwd)"
+# shellcheck source=/dev/null
 source "$DIR/env.sh"
 fail=0
 ok()  { echo "✔ $1"; }

@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # regls.sh – listet alle Repositories, Tags und Digests der lokalen Registry
 set -euo pipefail
+# shellcheck source=/dev/null
 source "${LAB:-$HOME/docker-lab}/setup/env.sh"
 accept='application/vnd.oci.image.index.v1+json'
 accept+=',application/vnd.oci.image.manifest.v1+json'

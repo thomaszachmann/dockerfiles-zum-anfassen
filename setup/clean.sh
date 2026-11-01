@@ -1,10 +1,13 @@
 #!/usr/bin/env bash
+# IDs und Images sollen bewusst in einzelne Wörter zerfallen (ein Argument je Eintrag):
+# shellcheck disable=SC2086
 # clean.sh [--all] – räumt nur Lab-Spuren auf:
 #   Container und Images notes-* bzw. $REGISTRY/*, Cache des Builders $BUILDER.
 #   --all  zusätzlich Registry (inkl. Volume) und Builder entfernen.
 # Nie docker system prune: Das träfe auch fremde Projekte.
 set -euo pipefail
 DIR="$(cd "$(dirname "$0")" && pwd)"
+# shellcheck source=/dev/null
 source "$DIR/env.sh"
 pat="^(notes-|$REGISTRY/)"
 
