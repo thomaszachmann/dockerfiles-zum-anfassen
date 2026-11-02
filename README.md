@@ -10,7 +10,6 @@ Der Code begleitet das Buch; Erklärungen und Übungen stehen im Buch.
 
 - `notes/`
 - `setup/`
-- `tag00/` – Tag 0
 - `tag01/` – Tag 1
 - `tag02/` – Tag 2
 - `tag03/` – Tag 3
