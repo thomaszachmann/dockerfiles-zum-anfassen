@@ -4,7 +4,6 @@
 set -uo pipefail
 img=${1:?Aufruf: leak-audit.sh IMAGE [MUSTER]}
 pat=${2:-lab-api-key-}
-dir="$(cd "$(dirname "$0")" && pwd)"
 found=0
 docker image inspect "$img" >/dev/null 2>&1 || { echo "✘ Image $img fehlt"; exit 99; }
 ok()  { echo "✔ $img: $1 sauber"; }
@@ -20,9 +19,15 @@ if docker image inspect --format '{{json .Config}}' "$img" | grep -qF -- "$pat";
 else
   ok "Image-Config"
 fi
-if "$dir/leaks/find-in-layers.sh" "$img" "$pat" >/dev/null; then
-  ok "Layer"
-else
+tmp=$(mktemp -d)
+trap 'rm -rf "$tmp"' EXIT
+docker save "$img" | tar -xf - -C "$tmp"
+n=$(for l in $(jq -r '.[0].Layers[]' "$tmp/manifest.json"); do
+      tar -xOf "$tmp/$l" 2>/dev/null
+    done | grep -acF -- "$pat")
+if [ "$n" -gt 0 ]; then
   bad "Layer"
+else
+  ok "Layer"
 fi
 exit "$found"
